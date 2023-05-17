@@ -22,7 +22,7 @@ const Autocomplete = () => {
     const handleOnSearch = (ev) => {
         // Filter the autocomplete options based on the search query
         const filteredOptions = autocompleteOptions.filter((option) =>
-            option.toLowerCase().includes(ev.target.value.toLowerCase())
+            option.toLowerCase() === ev.target.value.toLowerCase()
         );
 
 
