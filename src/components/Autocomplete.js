@@ -11,6 +11,10 @@ const Autocomplete = () => {
     const autocompleteOptions = useSelector(
         (state) => state.autocompleteOptions
     );
+
+    const [options, setOptions] = useState(autocompleteOptions);
+
+
     const handleOnChange = (value) => {
         setSelectedValue(value);
     };
@@ -21,10 +25,16 @@ const Autocomplete = () => {
 
     const handleOnSearch = (ev) => {
         // Filter the autocomplete options based on the search query
-        const filteredOptions = autocompleteOptions.filter((option) =>
-            option.toLowerCase() === ev.target.value.toLowerCase()
-        );
 
+        // console.log(autocompleteOptions, ev.target.value.toLowerCase());
+        const filteredOptions = autocompleteOptions.filter((option) => {
+            // console.log(option.toLowerCase(), ev.target.value.toLowerCase());
+                return option.toLowerCase().includes(ev.target.value.toLowerCase());
+            }
+        );
+        // dispatch(setAutocompleteOptions(filteredOptions));
+
+        setOptions(filteredOptions);
 
         if (ev.key === 'Enter' && filteredOptions.length === 0) {
 
@@ -34,11 +44,13 @@ const Autocomplete = () => {
                 content: `"${ev.target.value}" not found. Do you want to create a new note?`,
                 onOk: () => {
                     dispatch(setAutocompleteOptions([...autocompleteOptions, ev.target.value]));
+                    setSelectedValue(ev.target.value);
                     message.success('Note added!');
                 },
             });
-        } else {
-            //dispatch(setAutocompleteOptions(filteredOptions));
+        } else if(ev.key === 'Enter' && filteredOptions.length > 0) {
+            // console.log(filteredOptions[0])
+            setSelectedValue(filteredOptions[0]);
         }
     };
 
@@ -51,7 +63,7 @@ const Autocomplete = () => {
             onChange={handleOnChange}
             // onSelect={handleOnSelect}
             // onSearch={handleOnSearch}
-            options={autocompleteOptions.map((option) => ({
+            options={options.map((option) => ({
                 value: option,
             }))}
         >
