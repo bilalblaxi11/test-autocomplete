@@ -12,33 +12,17 @@ const Autocomplete = () => {
         (state) => state.autocompleteOptions
     );
 
-    const [options, setOptions] = useState(autocompleteOptions);
-
-
     const handleOnChange = (value) => {
         setSelectedValue(value);
     };
-    // const handleOnSelect = (value) => {
-    //     // Perform any action or logic when an item is selected
-    //     console.log('Selected value:', value);
-    // };
 
     const handleOnSearch = (ev) => {
-        // Filter the autocomplete options based on the search query
-
-        // console.log(autocompleteOptions, ev.target.value.toLowerCase());
         const filteredOptions = autocompleteOptions.filter((option) => {
-            // console.log(option.toLowerCase(), ev.target.value.toLowerCase());
                 return option.toLowerCase().includes(ev.target.value.toLowerCase());
             }
         );
-        // dispatch(setAutocompleteOptions(filteredOptions));
-
-        setOptions(filteredOptions);
 
         if (ev.key === 'Enter' && filteredOptions.length === 0) {
-
-            // Display a popup to add the value as a new item
             Modal.confirm({
                 title: 'Add Note',
                 content: `"${ev.target.value}" not found. Do you want to create a new note?`,
@@ -48,9 +32,6 @@ const Autocomplete = () => {
                     message.success('Note added!');
                 },
             });
-        } else if(ev.key === 'Enter' && filteredOptions.length > 0) {
-            // console.log(filteredOptions[0])
-            setSelectedValue(filteredOptions[0]);
         }
     };
 
@@ -63,9 +44,13 @@ const Autocomplete = () => {
             onChange={handleOnChange}
             // onSelect={handleOnSelect}
             // onSearch={handleOnSearch}
-            options={options.map((option) => ({
+            options={autocompleteOptions.map((option) => ({
                 value: option,
             }))}
+            filterOption={(inputValue, option) =>
+                option?.value.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+            }
+            defaultActiveFirstOption={true}
         >
             <Search
                 placeholder="input here"
